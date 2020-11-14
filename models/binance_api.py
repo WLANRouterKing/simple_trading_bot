@@ -38,7 +38,7 @@ class BinanceAPI:
 
     def set_last_bought(self, close):
         """
-
+        writes the last bought value into a text file
         :param close:
         :return:
         """
