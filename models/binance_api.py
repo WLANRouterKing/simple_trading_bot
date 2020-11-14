@@ -27,8 +27,8 @@ class BinanceAPI:
     # noinspection PyTypeChecker
     def __init__(self):
         self.closes = []
-        self.rsi_overbought = 70
-        self.rsi_oversold = 30
+        self.rsi_overbought = 51
+        self.rsi_oversold = 49
         self.rsi_period = 21
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
@@ -38,7 +38,7 @@ class BinanceAPI:
 
     def set_last_bought(self, close):
         """
-        writes the last price at which a buyorder got placed into an file
+
         :param close:
         :return:
         """
@@ -47,7 +47,7 @@ class BinanceAPI:
 
     def get_last_order_id(self):
         """
-        returns the value written in the last_order_id.txt
+
         :return:
         """
         if os.path.isfile(os.path.join("last_order_id.txt")):
@@ -57,7 +57,7 @@ class BinanceAPI:
 
     def set_last_order_id(self, order_id):
         """
-        writes the last order id into a file
+
         :param close:
         :return:
         """
@@ -66,7 +66,7 @@ class BinanceAPI:
 
     def get_last_bought(self):
         """
-        returns the value written in the last_bought.txt
+
         :return:
         """
         if os.path.isfile(os.path.join("last_bought.txt")):
@@ -76,7 +76,7 @@ class BinanceAPI:
 
     def set_in_position(self, position):
         """
-        writes the position value into a text file
+
         :param position:
         :return:
         """
@@ -85,7 +85,7 @@ class BinanceAPI:
 
     def get_in_position(self):
         """
-        returns the value written in the position.txt file
+
         :return:
         """
         if os.path.isfile(os.path.join("position.txt")):
@@ -95,7 +95,7 @@ class BinanceAPI:
 
     def start_socket(self):
         """
-        starts the websocket
+
         :return:
         """
         self.socket_manager.start()
@@ -103,7 +103,7 @@ class BinanceAPI:
 
     def restart_socket(self):
         """
-        restarts the socket if an error occurs
+
         :return:
         """
         debug_logger.debug("restarting socket")
@@ -112,10 +112,6 @@ class BinanceAPI:
         debug_logger.debug("socket restarted")
 
     def check_last_order_status(self):
-        """
-
-        :return:
-        """
         order_id = self.get_last_order_id()
         order = self.client.get_order(symbol=self.config.get("Symbol"), orderId=order_id)
         if order["status"] == "FILLED":
