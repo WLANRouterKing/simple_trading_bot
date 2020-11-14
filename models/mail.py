@@ -26,12 +26,13 @@ class Mail:
         :param message:
         :return:
         """
-        message = MIMEText(message)
-        message['Subject'] = subject
-        message['From'] = self.sender_address
-        message['To'] = self.receiver_address
+        if self.config.get("SendMail") == "1":
+            message = MIMEText(message)
+            message['Subject'] = subject
+            message['From'] = self.sender_address
+            message['To'] = self.receiver_address
 
-        server = smtplib.SMTP(self.host, self.port)
-        server.login(self.user, self.password)
-        server.sendmail(self.sender_address, [self.receiver_address], message.as_string())
-        server.quit()
+            server = smtplib.SMTP(self.host, self.port)
+            server.login(self.user, self.password)
+            server.sendmail(self.sender_address, [self.receiver_address], message.as_string())
+            server.quit()

@@ -27,8 +27,8 @@ class BinanceAPI:
     # noinspection PyTypeChecker
     def __init__(self):
         self.closes = []
-        self.rsi_overbought = 51
-        self.rsi_oversold = 49
+        self.rsi_overbought = 70
+        self.rsi_oversold = 30
         self.rsi_period = 21
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
@@ -189,10 +189,15 @@ class BinanceAPI:
         :return:
         """
         price, quantity = self.get_sell_value(close)
+        orderType = self.config.get("OrderType")
+        if orderType == "0":
+            orderType = self.client.ORDER_TYPE_MARKET
+        if orderType == "1":
+            orderType = self.client.ORDER_TYPE_LIMIT
         order = self.client.create_order(
             symbol=self.config.get("Symbol"),
             side=self.client.SIDE_SELL,
-            type=self.client.ORDER_TYPE_LIMIT,
+            type=orderType,
             timeInForce=self.client.TIME_IN_FORCE_GTC,
             quantity=quantity,
             price=price)
@@ -218,10 +223,15 @@ class BinanceAPI:
         :return:
         """
         price, quantity = self.get_buy_value(close)
+        orderType = self.config.get("OrderType")
+        if orderType == "0":
+            orderType = self.client.ORDER_TYPE_MARKET
+        if orderType == "1":
+            orderType = self.client.ORDER_TYPE_LIMIT
         order = self.client.create_order(
             symbol=self.config.get("Symbol"),
             side=self.client.SIDE_BUY,
-            type=self.client.ORDER_TYPE_LIMIT,
+            type=orderType,
             timeInForce=self.client.TIME_IN_FORCE_GTC,
             quantity=quantity,
             price=price)
@@ -280,8 +290,8 @@ class BinanceAPI:
         price, quantity = self.get_buy_value(close)
         subject = "Tradingbot: Kaufe"
         message = "Ich setze eine Kauforder:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
 
@@ -294,8 +304,8 @@ class BinanceAPI:
         """
         subject = "Tradingbot: Gekauft"
         message = "Kauforder erfolgreich:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
 
@@ -308,8 +318,8 @@ class BinanceAPI:
         """
         subject = "Tradingbot: Kauf abgebrochen"
         message = "Die letzte Kauforder wurde abgebrochen:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
 
@@ -322,8 +332,8 @@ class BinanceAPI:
         price, quantity = self.get_sell_value(close)
         subject = "Tradingbot: Verkaufe"
         message = "Ich setze eine Verkauforder:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
 
@@ -336,8 +346,8 @@ class BinanceAPI:
         """
         subject = "Tradingbot: Verkauft"
         message = "Die letzte Verkauforder war erfolgreich:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
 
@@ -350,7 +360,7 @@ class BinanceAPI:
         """
         subject = "Tradingbot: Verkauf abgebrochen"
         message = "Die letzte Verkauforder wurde abgebrochen:"
-        message += "Preis: {0}".format(price)
-        message += "Menge: {0}".format(quantity)
+        message += "Preis: {0}</br>".format(price)
+        message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
