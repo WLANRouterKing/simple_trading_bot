@@ -30,11 +30,35 @@ class BinanceAPI:
         self.rsi_overbought = 70
         self.rsi_oversold = 30
         self.rsi_period = 21
+        self.macd_fast_period = 12
+        self.macd_slow_period = 26
+        self.macd_signal_period = 9
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
         self.socket_manager = BinanceSocketManager(self.client)
         self.connection_key = self.socket_manager.start_kline_socket(self.config.get("Symbol"), self.process_message,
                                                                      interval=self.get_interval())
+
+    def write_file(self, path, content):
+        """
+
+        :param path:
+        :param content:
+        :return:
+        """
+        with open(path, "w") as file:
+            file.write(content)
+
+    def read_file(self, path):
+        """
+
+        :param path:
+        :return:
+        """
+        if os.path.isfile(path):
+            with open(path, "r") as file:
+                return str(file.read())
+        return ""
 
     def set_last_bought(self, close):
         """
@@ -42,37 +66,29 @@ class BinanceAPI:
         :param close:
         :return:
         """
-        with open(os.path.join("last_bought.txt"), "w") as file:
-            file.write(str(float(close)))
+        self.write_file(os.path.join("last_bought.txt"), str(float(close)))
 
     def get_last_order_id(self):
         """
 
         :return:
         """
-        if os.path.isfile(os.path.join("last_order_id.txt")):
-            with open(os.path.join("last_order_id.txt"), "r") as file:
-                return str(file.read())
-        return ""
+        return self.read_file(os.path.join("last_order_id.txt"))
 
     def set_last_order_id(self, order_id):
         """
 
-        :param close:
+        :param order_id:
         :return:
         """
-        with open(os.path.join("last_order_id.txt"), "w") as file:
-            file.write(str(order_id))
+        self.write_file(os.path.join("last_order_id.txt"), str(order_id))
 
     def get_last_bought(self):
         """
 
         :return:
         """
-        if os.path.isfile(os.path.join("last_bought.txt")):
-            with open(os.path.join("last_bought.txt"), "r") as file:
-                return float(file.read())
-        return 0.0
+        return float(self.read_file(os.path.join("last_bought.txt")))
 
     def set_in_position(self, position):
         """
@@ -80,18 +96,14 @@ class BinanceAPI:
         :param position:
         :return:
         """
-        with open(os.path.join("position.txt"), "w") as file:
-            file.write(str(int(position)))
+        self.write_file(os.path.join("position.txt"), str(int(position)))
 
     def get_in_position(self):
         """
 
         :return:
         """
-        if os.path.isfile(os.path.join("position.txt")):
-            with open(os.path.join("position.txt"), "r") as file:
-                return bool(int(file.read()))
-        return False
+        return self.read_file(os.path.join("position.txt"))
 
     def start_socket(self):
         """
@@ -157,9 +169,15 @@ class BinanceAPI:
                 debug_logger.debug("appending close value: {0}".format(close))
                 self.closes.append(close)
 
-                if len(self.closes) > self.rsi_period:
+                if len(self.closes) > 100:
                     np_closes = numpy.array(self.closes)
                     rsi = talib.RSI(np_closes, self.rsi_period)
+                    macd, macdsignal, macdhist = talib.MACD(np_closes, fastperiod=self.macd_fast_period,
+                                                            slowperiod=self.macd_slow_period,
+                                                            signalperiod=self.macd_signal_period)
+                    print(close)
+                    macd_value = numpy.where((macd > macdsignal), 1, 0)
+                    print(macd_value)
                     last_rsi = rsi[-1]
                     debug_logger.debug("RSI {}".format(last_rsi))
 
@@ -182,6 +200,14 @@ class BinanceAPI:
                                 " **************************** BUY: {} **************************** ".format(close))
                             self.buy(close)
 
+    def get_order_type(self):
+        order_type = self.config.get("OrderType")
+        if order_type == "0":
+            order_type = self.client.ORDER_TYPE_MARKET
+        if order_type == "1":
+            order_type = self.client.ORDER_TYPE_LIMIT
+        return order_type
+
     def sell(self, close):
         """
 
@@ -189,15 +215,10 @@ class BinanceAPI:
         :return:
         """
         price, quantity = self.get_sell_value(close)
-        orderType = self.config.get("OrderType")
-        if orderType == "0":
-            orderType = self.client.ORDER_TYPE_MARKET
-        if orderType == "1":
-            orderType = self.client.ORDER_TYPE_LIMIT
         order = self.client.create_order(
             symbol=self.config.get("Symbol"),
             side=self.client.SIDE_SELL,
-            type=orderType,
+            type=self.get_order_type(),
             timeInForce=self.client.TIME_IN_FORCE_GTC,
             quantity=quantity,
             price=price)
@@ -223,15 +244,10 @@ class BinanceAPI:
         :return:
         """
         price, quantity = self.get_buy_value(close)
-        orderType = self.config.get("OrderType")
-        if orderType == "0":
-            orderType = self.client.ORDER_TYPE_MARKET
-        if orderType == "1":
-            orderType = self.client.ORDER_TYPE_LIMIT
         order = self.client.create_order(
             symbol=self.config.get("Symbol"),
             side=self.client.SIDE_BUY,
-            type=orderType,
+            type=self.get_order_type(),
             timeInForce=self.client.TIME_IN_FORCE_GTC,
             quantity=quantity,
             price=price)

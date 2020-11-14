@@ -1,2 +1,338 @@
 2020-11-14 15:07:05 || [main.py:9 -             <module>() ] - DEBUG - **************************************** TRADING BOT STARTED ****************************************
 2020-11-14 15:07:05 || [binance_api.py:102 -         start_socket() ] - DEBUG - socket started
+2020-11-14 15:08:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.39
+2020-11-14 15:09:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.27
+2020-11-14 15:10:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.68
+2020-11-14 15:11:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.91
+2020-11-14 15:12:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.22
+2020-11-14 15:13:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.07
+2020-11-14 15:14:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.27
+2020-11-14 15:15:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.13
+2020-11-14 15:16:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.66
+2020-11-14 15:17:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.59
+2020-11-14 15:18:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.68
+2020-11-14 15:19:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.68
+2020-11-14 15:20:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.41
+2020-11-14 15:21:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.53
+2020-11-14 15:22:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.23
+2020-11-14 15:23:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.0
+2020-11-14 15:24:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.0
+2020-11-14 15:25:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.08
+2020-11-14 15:26:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.9
+2020-11-14 15:27:06 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.49
+2020-11-14 15:28:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.82
+2020-11-14 15:29:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.69
+2020-11-14 15:29:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 53.08641975308649
+2020-11-14 15:30:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.79
+2020-11-14 15:30:05 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.07854984894287
+2020-11-14 15:31:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.83
+2020-11-14 15:31:03 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.48284122896319
+2020-11-14 15:32:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.91
+2020-11-14 15:32:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 55.3091022421897
+2020-11-14 15:33:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 392.07
+2020-11-14 15:33:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 56.95019307271958
+2020-11-14 15:34:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 392.2
+2020-11-14 15:34:05 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 58.25787103323332
+2020-11-14 15:35:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 392.15
+2020-11-14 15:35:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 57.55187056186165
+2020-11-14 15:36:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 392.0
+2020-11-14 15:36:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 55.43570092813462
+2020-11-14 15:37:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 392.02
+2020-11-14 15:37:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 55.663932771037196
+2020-11-14 15:38:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.95
+2020-11-14 15:38:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.63562663134336
+2020-11-14 15:39:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.83
+2020-11-14 15:39:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 52.8773361882645
+2020-11-14 15:40:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.83
+2020-11-14 15:40:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 52.877336188264515
+2020-11-14 15:41:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.62
+2020-11-14 15:41:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.7860513982774
+2020-11-14 15:42:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.57
+2020-11-14 15:42:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.06889197629076
+2020-11-14 15:43:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.81
+2020-11-14 15:43:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 52.51622914834101
+2020-11-14 15:44:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.72
+2020-11-14 15:44:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 51.15292829991378
+2020-11-14 15:45:08 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.46
+2020-11-14 15:45:08 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.41896234283973
+2020-11-14 15:46:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.48
+2020-11-14 15:46:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.72715475373262
+2020-11-14 15:47:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.72
+2020-11-14 15:47:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 51.32212225378582
+2020-11-14 15:48:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.55
+2020-11-14 15:48:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 48.82473603084409
+2020-11-14 15:49:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.47
+2020-11-14 15:49:04 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.678345356533505
+2020-11-14 15:50:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.41
+2020-11-14 15:50:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 46.812764599797084
+2020-11-14 15:51:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.46
+2020-11-14 15:51:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.64444645459877
+2020-11-14 15:52:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.49
+2020-11-14 15:52:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 48.15518156785706
+2020-11-14 15:53:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.04
+2020-11-14 15:53:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.74183055666564
+2020-11-14 15:54:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.98
+2020-11-14 15:54:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 40.97778630197993
+2020-11-14 15:55:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.09
+2020-11-14 15:55:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.98666718788463
+2020-11-14 15:56:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.2
+2020-11-14 15:56:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.95389469357225
+2020-11-14 15:57:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.77
+2020-11-14 15:57:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 39.377074124523126
+2020-11-14 15:58:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.06
+2020-11-14 15:58:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.27267895833611
+2020-11-14 15:59:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.3
+2020-11-14 15:59:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.92682627799383
+2020-11-14 16:00:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.2
+2020-11-14 16:00:04 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 46.59025826994683
+2020-11-14 16:01:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.3
+2020-11-14 16:01:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 48.109712990364365
+2020-11-14 16:02:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.21
+2020-11-14 16:02:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 46.85017771277769
+2020-11-14 16:03:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.08
+2020-11-14 16:03:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 45.06094033487188
+2020-11-14 16:04:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.08
+2020-11-14 16:04:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 45.06094033487188
+2020-11-14 16:05:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 391.0
+2020-11-14 16:05:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.92286090844652
+2020-11-14 16:06:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.9
+2020-11-14 16:06:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.51357452433208
+2020-11-14 16:07:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.63
+2020-11-14 16:07:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 38.968873949451876
+2020-11-14 16:08:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.12
+2020-11-14 16:08:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 33.43915630425695
+2020-11-14 16:09:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.09
+2020-11-14 16:09:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 33.14862628502366
+2020-11-14 16:10:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.96
+2020-11-14 16:10:04 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 31.888033447868818
+2020-11-14 16:11:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.17
+2020-11-14 16:11:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 36.015194310386114
+2020-11-14 16:12:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.08
+2020-11-14 16:12:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 35.05922745984395
+2020-11-14 16:13:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.11
+2020-11-14 16:13:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 35.65698698989286
+2020-11-14 16:14:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.11
+2020-11-14 16:14:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 35.65698698989286
+2020-11-14 16:15:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.03
+2020-11-14 16:15:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 34.71747038076468
+2020-11-14 16:16:06 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.18
+2020-11-14 16:16:06 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 37.93693467225483
+2020-11-14 16:17:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.91
+2020-11-14 16:17:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 34.70242627851561
+2020-11-14 16:18:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.38
+2020-11-14 16:18:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.50622376714682
+2020-11-14 16:19:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.91
+2020-11-14 16:19:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 38.110965378850764
+2020-11-14 16:20:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.03
+2020-11-14 16:20:05 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 40.10229755255869
+2020-11-14 16:21:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.1
+2020-11-14 16:21:03 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.25992964408878
+2020-11-14 16:22:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.13
+2020-11-14 16:22:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.76639134699987
+2020-11-14 16:23:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.11
+2020-11-14 16:23:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.515824357851834
+2020-11-14 16:24:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.27
+2020-11-14 16:24:05 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.32166146422124
+2020-11-14 16:25:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.9
+2020-11-14 16:25:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 39.69725881915031
+2020-11-14 16:26:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.92
+2020-11-14 16:26:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 40.052260159902794
+2020-11-14 16:27:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.03
+2020-11-14 16:27:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.023313241688484
+2020-11-14 16:28:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.03
+2020-11-14 16:28:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.02331324168849
+2020-11-14 16:29:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.12
+2020-11-14 16:29:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.69330364635674
+2020-11-14 16:30:08 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.86
+2020-11-14 16:30:08 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.90698821193044
+2020-11-14 16:31:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.5
+2020-11-14 16:31:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.83707088174489
+2020-11-14 16:32:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.02
+2020-11-14 16:32:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.13207146841805
+2020-11-14 16:33:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.12
+2020-11-14 16:33:03 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 45.496882427607176
+2020-11-14 16:34:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.97
+2020-11-14 16:34:04 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.81120044999444
+2020-11-14 16:35:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.23
+2020-11-14 16:35:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.36076410949926
+2020-11-14 16:36:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.44
+2020-11-14 16:36:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 50.03749473924064
+2020-11-14 16:37:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.44
+2020-11-14 16:37:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 50.03749473924064
+2020-11-14 16:38:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.26
+2020-11-14 16:38:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.743254358647604
+2020-11-14 16:39:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.33
+2020-11-14 16:39:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 48.703638016445936
+2020-11-14 16:40:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.27
+2020-11-14 16:40:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.911170100519755
+2020-11-14 16:41:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.4
+2020-11-14 16:41:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.770516878300164
+2020-11-14 16:42:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.41
+2020-11-14 16:42:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.91491785506248
+2020-11-14 16:43:06 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.52
+2020-11-14 16:43:06 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 51.524509174056234
+2020-11-14 16:44:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.4
+2020-11-14 16:44:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.69514953765714
+2020-11-14 16:45:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.91
+2020-11-14 16:45:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.12968252684584
+2020-11-14 16:46:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.34
+2020-11-14 16:46:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 49.30144087314545
+2020-11-14 16:47:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.92
+2020-11-14 16:47:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.36377305676428
+2020-11-14 16:48:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.96
+2020-11-14 16:48:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.915459092711316
+2020-11-14 16:49:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.96
+2020-11-14 16:49:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.915459092711316
+2020-11-14 16:50:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.17
+2020-11-14 16:50:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.90541514196827
+2020-11-14 16:51:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.87
+2020-11-14 16:51:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.298658010707435
+2020-11-14 16:52:01 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.87
+2020-11-14 16:52:01 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.298658010707435
+2020-11-14 16:53:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.73
+2020-11-14 16:53:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.64668499690488
+2020-11-14 16:54:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.2
+2020-11-14 16:54:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 37.14109114695291
+2020-11-14 16:55:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.68
+2020-11-14 16:55:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 44.01417497939937
+2020-11-14 16:56:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 388.92
+2020-11-14 16:56:03 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 37.243961987815624
+2020-11-14 16:57:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.26
+2020-11-14 16:57:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.47280987979236
+2020-11-14 16:58:04 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.34
+2020-11-14 16:58:04 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 42.43122553716044
+2020-11-14 16:59:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 388.95
+2020-11-14 16:59:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 39.149610796430764
+2020-11-14 17:00:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.18
+2020-11-14 17:00:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 41.93061577910473
+2020-11-14 17:01:00 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 388.87
+2020-11-14 17:01:00 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 39.38335023477772
+2020-11-14 17:02:03 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 388.76
+2020-11-14 17:02:03 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 38.511673092812046
+2020-11-14 17:03:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.14
+2020-11-14 17:03:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 43.081275064856264
+2020-11-14 17:04:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.51
+2020-11-14 17:04:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 47.100520459441306
+2020-11-14 17:05:06 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 389.68
+2020-11-14 17:05:06 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 48.84324538014973
+2020-11-14 17:06:02 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.0
+2020-11-14 17:06:02 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 51.97058532762468
+2020-11-14 17:07:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.12
+2020-11-14 17:07:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 53.099522919424544
+2020-11-14 17:08:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.24
+2020-11-14 17:08:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.22916477917666
+2020-11-14 17:09:06 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.29
+2020-11-14 17:09:06 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 54.70644994386967
+2020-11-14 17:10:07 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.54
+2020-11-14 17:10:07 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 57.05736578907619
+2020-11-14 17:11:05 || [binance_api.py:157 -      process_message() ] - DEBUG - appending close value: 390.2
+2020-11-14 17:11:05 || [binance_api.py:164 -      process_message() ] - DEBUG - RSI 53.12015840873057
+2020-11-14 17:29:06 || [main.py:8 -             <module>() ] - DEBUG - **************************************** TRADING BOT STARTED ****************************************
+2020-11-14 17:29:06 || [binance_api.py:114 -         start_socket() ] - DEBUG - socket started
+2020-11-14 17:29:59 || [main.py:8 -             <module>() ] - DEBUG - **************************************** TRADING BOT STARTED ****************************************
+2020-11-14 17:29:59 || [binance_api.py:114 -         start_socket() ] - DEBUG - socket started
+2020-11-14 17:31:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 391.14
+2020-11-14 17:32:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.96
+2020-11-14 17:33:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.75
+2020-11-14 17:34:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.75
+2020-11-14 17:35:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.56
+2020-11-14 17:36:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.06
+2020-11-14 17:37:03 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.34
+2020-11-14 17:38:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.07
+2020-11-14 17:39:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 390.09
+2020-11-14 17:40:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 389.97
+2020-11-14 17:41:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 389.77
+2020-11-14 17:42:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 389.6
+2020-11-14 17:43:04 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 389.2
+2020-11-14 17:44:03 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.74
+2020-11-14 17:45:08 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.97
+2020-11-14 17:46:05 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.45
+2020-11-14 17:47:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.65
+2020-11-14 17:48:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.28
+2020-11-14 17:49:02 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.11
+2020-11-14 17:50:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.72
+2020-11-14 17:51:03 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.41
+2020-11-14 17:52:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.15
+2020-11-14 17:53:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.97
+2020-11-14 17:54:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.11
+2020-11-14 17:55:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.51
+2020-11-14 17:56:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.66
+2020-11-14 17:57:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.06
+2020-11-14 17:57:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 27.011217668022265
+2020-11-14 17:57:01 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 17:58:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.88
+2020-11-14 17:58:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 26.323885804735863
+2020-11-14 17:58:00 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 17:59:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.99
+2020-11-14 17:59:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 27.507539436060235
+2020-11-14 17:59:07 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:00:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.35
+2020-11-14 18:00:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.300270628083602
+2020-11-14 18:01:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.67
+2020-11-14 18:01:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 34.49876427452413
+2020-11-14 18:02:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.45
+2020-11-14 18:02:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 33.3770045937295
+2020-11-14 18:03:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.63
+2020-11-14 18:03:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 35.18748684740255
+2020-11-14 18:04:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.71
+2020-11-14 18:04:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 35.999125657269076
+2020-11-14 18:05:05 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.44
+2020-11-14 18:05:05 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 34.46944319416772
+2020-11-14 18:06:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.12
+2020-11-14 18:06:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 32.73826978969478
+2020-11-14 18:07:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.88
+2020-11-14 18:07:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.492703598068346
+2020-11-14 18:08:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.12
+2020-11-14 18:08:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 34.12433697996702
+2020-11-14 18:09:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.71
+2020-11-14 18:09:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.924575450539106
+2020-11-14 18:10:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.61
+2020-11-14 18:10:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.406096905919668
+2020-11-14 18:11:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.63
+2020-11-14 18:11:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.639244965014424
+2020-11-14 18:12:02 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.55
+2020-11-14 18:12:02 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 31.193931635248724
+2020-11-14 18:13:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.23
+2020-11-14 18:13:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 29.45286110735043
+2020-11-14 18:13:00 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:14:04 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.06
+2020-11-14 18:14:04 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 28.563563988557974
+2020-11-14 18:14:04 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:15:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.22
+2020-11-14 18:15:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 30.633373277465132
+2020-11-14 18:16:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 385.45
+2020-11-14 18:16:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 26.72113345065044
+2020-11-14 18:16:00 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:17:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 384.62
+2020-11-14 18:17:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 23.34648310556962
+2020-11-14 18:17:07 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:18:03 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 385.3
+2020-11-14 18:18:03 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 30.858129709684114
+2020-11-14 18:19:01 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 384.87
+2020-11-14 18:19:01 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 28.972983156367604
+2020-11-14 18:19:01 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:20:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 384.52
+2020-11-14 18:20:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 27.535328208312954
+2020-11-14 18:20:07 || [binance_api.py:198 -      process_message() ] - DEBUG - it is oversold, but you already own it, nothing to do
+2020-11-14 18:21:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.18
+2020-11-14 18:21:07 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 41.89393381365863
+2020-11-14 18:22:02 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.91
+2020-11-14 18:22:02 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 46.764622234573785
+2020-11-14 18:23:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.26
+2020-11-14 18:23:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 48.92014690094214
+2020-11-14 18:24:00 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 386.63
+2020-11-14 18:24:00 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 45.442565512297364
+2020-11-14 18:25:02 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.0
+2020-11-14 18:25:02 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 47.73375659702001
+2020-11-14 18:26:06 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.74
+2020-11-14 18:26:06 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 51.969626647279796
+2020-11-14 18:27:05 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.62
+2020-11-14 18:27:05 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 51.26223857208536
+2020-11-14 18:28:03 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.97
+2020-11-14 18:28:03 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 53.212591582383915
+2020-11-14 18:29:06 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 387.82
+2020-11-14 18:29:06 || [binance_api.py:183 -      process_message() ] - DEBUG - RSI 52.27130151743299
+2020-11-14 18:46:25 || [main.py:8 -             <module>() ] - DEBUG - **************************************** TRADING BOT STARTED ****************************************
+2020-11-14 18:46:25 || [binance_api.py:114 -         start_socket() ] - DEBUG - socket started
+2020-11-14 18:47:05 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.74
+2020-11-14 18:48:07 || [binance_api.py:169 -      process_message() ] - DEBUG - appending close value: 388.5
