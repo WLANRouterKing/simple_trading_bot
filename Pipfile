@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+backtrader = "==1.9.76.123"
+python-binance = "==0.7.5"
+pandas = "==1.1.2"
+TA-Lib = "==0.4.19"
+numpy = "==1.19.2"
+binance = "==0.3"
+talib = "==0.1.1"
+websocket_client = "==0.57.0"
+ta-lib = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
