@@ -66,14 +66,14 @@ class BinanceAPI:
         :param close:
         :return:
         """
-        self.write_file(os.path.join("last_bought.txt"), str(float(close)))
+        self.write_file(os.path.join("/cache/last_bought.txt"), str(float(close)))
 
     def get_last_order_id(self):
         """
 
         :return:
         """
-        return self.read_file(os.path.join("last_order_id.txt"))
+        return self.read_file(os.path.join("/cache/last_order_id.txt"))
 
     def set_last_order_id(self, order_id):
         """
@@ -81,14 +81,14 @@ class BinanceAPI:
         :param order_id:
         :return:
         """
-        self.write_file(os.path.join("last_order_id.txt"), str(order_id))
+        self.write_file(os.path.join("/cache/last_order_id.txt"), str(order_id))
 
     def get_last_bought(self):
         """
 
         :return:
         """
-        return float(self.read_file(os.path.join("last_bought.txt")))
+        return float(self.read_file(os.path.join("/cache/last_bought.txt")))
 
     def set_in_position(self, position):
         """
@@ -96,14 +96,14 @@ class BinanceAPI:
         :param position:
         :return:
         """
-        self.write_file(os.path.join("position.txt"), str(int(position)))
+        self.write_file(os.path.join("/cache/position.txt"), str(int(position)))
 
     def get_in_position(self):
         """
 
         :return:
         """
-        return self.read_file(os.path.join("position.txt"))
+        return self.read_file(os.path.join("/cache/position.txt"))
 
     def start_socket(self):
         """
