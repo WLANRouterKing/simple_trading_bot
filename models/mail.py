@@ -1,3 +1,4 @@
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from models.config import Config
@@ -27,12 +28,20 @@ class Mail:
         :return:
         """
         if self.config.get("SendMail") == "1":
-            message = MIMEText(message)
-            message['Subject'] = subject
-            message['From'] = self.sender_address
-            message['To'] = self.receiver_address
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = self.sender_address
+            msg['To'] = self.receiver_address
+            # Record the MIME types of both parts - text/plain and text/html.
+            part1 = MIMEText(message, 'plain')
+            part2 = MIMEText(message, 'html')
 
+            # Attach parts into message container.
+            # According to RFC 2046, the last part of a multipart message, in this case
+            # the HTML message, is best and preferred.
+            msg.attach(part1)
+            msg.attach(part2)
             server = smtplib.SMTP(self.host, self.port)
             server.login(self.user, self.password)
-            server.sendmail(self.sender_address, [self.receiver_address], message.as_string())
+            server.sendmail(self.sender_address, [self.receiver_address], msg.as_string())
             server.quit()

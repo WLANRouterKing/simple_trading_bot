@@ -28,16 +28,10 @@ class BinanceAPI:
 
     # noinspection PyTypeChecker
     def __init__(self):
-        self.bought = []
-        self.sold = []
-        self.dates = []
         self.closes = []
         self.rsi_overbought = 70
-        self.rsi_oversold = 35
+        self.rsi_oversold = 30
         self.rsi_period = 18
-        self.rsi_short_overbought = 85
-        self.rsi_short_oversold = 25
-        self.rsi_short_period = 5
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
         self.socket_manager = BinanceSocketManager(self.client)
@@ -121,12 +115,7 @@ class BinanceAPI:
         """
         dataframe = self.get_candles()
         for close in dataframe['close']:
-            self.bought.append(numpy.nan)
-            self.sold.append(numpy.nan)
             self.closes.append(close)
-        for date in dataframe['datetime']:
-            time = datetime.fromtimestamp(date.timestamp())
-            self.dates.append(time.strftime("%d.%m.%Y, %H:%M:%S"))
         self.socket_manager.start()
         debug_logger.debug("socket started")
 
@@ -178,8 +167,6 @@ class BinanceAPI:
         :param msg:
         :return:
         """
-        # buy = False
-        # sold = False
         if msg['e'] == 'error':
             debug_logger.debug("".format(msg['e']))
             self.restart_socket()
@@ -190,63 +177,46 @@ class BinanceAPI:
             close = float(candle["c"])
 
             if is_candle_closed:
+                debug_logger.debug(
+                    "--------------------------------------------------------------------------------------------------------------------------------------")
                 debug_logger.debug("appending close value: {0}".format(close))
-                timestamp = int(candle["T"] / 1000)
-                date = datetime.fromtimestamp(timestamp)
-                self.dates.append(date.strftime("%m/%d/%Y, %H:%M:%S"))
                 self.closes.append(close)
                 debug_logger.debug("closes size: {0}".format(str(len(self.closes))))
                 np_closes = numpy.array(self.closes)
-                closes_min = numpy.amin(np_closes)
-                closes_max = numpy.amax(np_closes)
-                average = numpy.average(np_closes)
-                upper_border = (closes_max - average / 2) + average
-                bottom_border = (average - closes_min / 2) + closes_min
-                print("Min {}".format(closes_min))
-                print("Max {}".format(closes_max))
-                print("Average {}".format(average))
                 rsi = talib.RSI(np_closes, self.rsi_period)
-                short_rsi = talib.RSI(np_closes, self.rsi_short_period)
+                upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=18, nbdevup=2, nbdevdn=2,
+                                                                matype=0)
+                upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
+                lowerband_crossed = numpy.where((np_closes < lowerband), 1, 0)
 
                 last_rsi = rsi[-1]
-                last_rsi_short = short_rsi[-1]
+                last_upperband_crossed = upperband_crossed[-1]
+                last_lowerband_crossed = lowerband_crossed[-1]
+
                 debug_logger.debug("RSI {}".format(last_rsi))
-                debug_logger.debug("Short RSI {}".format(last_rsi_short))
+                debug_logger.debug("last_upperband_crossed {}".format(last_upperband_crossed))
+                debug_logger.debug("last_lowerband_crossed {}".format(last_lowerband_crossed))
+
+                # print(
+                # "--------------------------------------------------------------------------------------------------------------------------------------")
+                # print("RSI {}".format(last_rsi))
+                # print("last_upperband_crossed {}".format(last_upperband_crossed))
+                # print("last_lowerband_crossed {}".format(last_lowerband_crossed))
 
                 if self.get_last_order_id() != "":
                     self.check_last_order_status()
 
-                if last_rsi > self.rsi_overbought and self.get_last_bought() < close and self.get_last_order_id() == "" and last_rsi_short > self.rsi_short_overbought:
+                if last_rsi > self.rsi_overbought and self.get_last_bought() + 3 < close and self.get_last_order_id() == "" and last_upperband_crossed:
                     if self.get_in_position():
                         self.sell(close)
-                        # self.sold.append(close)
-                        # sold = True
                     else:
                         debug_logger.debug("it is overbought but we dont own anything so nothing to do")
-                        # self.sold.append(numpy.nan)
 
-                if last_rsi < self.rsi_oversold and self.get_last_order_id() == "" and last_rsi_short < self.rsi_short_oversold:
+                if last_rsi < self.rsi_oversold and self.get_last_order_id() == "" and last_upperband_crossed:
                     if self.get_in_position():
                         debug_logger.debug("it is oversold, but you already own it, nothing to do")
-                        # self.sold.append(numpy.nan)
                     else:
-                        buy = True
                         self.buy(close)
-                        # self.bought.append(close)
-
-                # if not sold:
-                #     self.sold.append(numpy.nan)
-                # if not buy:
-                #     self.bought.append(numpy.nan)
-                # plt.figure(1)
-                # plt.subplot(211)
-                # plt.plot(self.dates, self.closes, color='blue')
-                # # plt.plot(self.dates, self.sold, color='red', marker='o')
-                # # plt.plot(self.dates, self.bought, color='green', marker='o')
-                # plt.subplot(212)
-                # plt.plot(self.dates, rsi, color='red')
-                # plt.plot(self.dates, short_rsi, color="orange")
-                # plt.show()
 
     def get_order_type(self):
         order_type = self.config.get("OrderType")
@@ -270,32 +240,40 @@ class BinanceAPI:
         print("Bottom {}".format(bottom_border))
         print("Top {}".format(upper_border))
         rsi = talib.RSI(np_closes, self.rsi_period)
-        short_rsi = talib.RSI(np_closes, self.rsi_short_period)
+        upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=18, nbdevup=2, nbdevdn=2, matype=0)
+        upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
+        lowerband_crossed = numpy.where((np_closes < lowerband), 1, 0)
+
         last_bought = self.get_last_bought()
         in_position = self.get_in_position()
+
         bought = list()
         sold = list()
 
         for i in range(0, len(np_closes)):
+
             buy = False
             sell = False
             last_rsi = rsi[i]
-            last_rsi_short = short_rsi[i]
+            last_upperband_crossed = upperband_crossed[i]
+            last_lowerband_crossed = lowerband_crossed[i]
+
             close = np_closes[i]
 
-            if last_rsi > self.rsi_overbought and last_bought < close and last_rsi_short > self.rsi_short_overbought and close > bottom_border:
+            if last_rsi > self.rsi_overbought and last_bought + 3 < close and last_upperband_crossed:
                 if in_position:
                     sold.append(close)
                     in_position = False
                     last_bought = 0.0
                     sell = True
 
-            if last_rsi < self.rsi_oversold and last_rsi_short < self.rsi_short_oversold and close < upper_border:
+            if last_rsi < self.rsi_oversold and last_lowerband_crossed:
                 if not in_position:
                     bought.append(close)
                     in_position = True
                     last_bought = close
                     buy = True
+
             if not sell:
                 sold.append(numpy.nan)
             if not buy:
@@ -304,13 +282,18 @@ class BinanceAPI:
         dates = dataframe['datetime']
         plt.figure(1)
         plt.subplot(211)
-        plt.plot(dates, np_closes, color='blue')
+
+        # plt.plot(dates, upperband, color='yellow')
+        # plt.plot(dates, middleband, color='black')
+        # plt.plot(dates, lowerband, color='green')
         plt.plot(dates, sold, color='red', marker='o')
         plt.plot(dates, bought, color='green', marker='o')
+        plt.plot(dates, np_closes, color='blue')
         plt.subplot(212)
         plt.plot(dates, rsi, color='red')
-
-        plt.plot(dates, short_rsi, color="orange")
+        # plt.subplot(313)
+        # plt.plot(dates, upperband_crossed, color='red', marker='o')
+        # plt.plot(dates, lowerband_crossed, color='green', marker='o')
         plt.show()
 
     def sell(self, close):
@@ -332,6 +315,7 @@ class BinanceAPI:
             self.send_sell_mail(close)
             debug_logger.debug(
                 " **************************** SELL: {} **************************** ".format(close))
+            print(" **************************** SELL: {} **************************** ".format(close))
             debug_logger.debug(json.dumps(order))
         except Exception as error:
             debug_logger.debug(error)
@@ -369,6 +353,7 @@ class BinanceAPI:
             self.send_buy_mail(close)
             debug_logger.debug(
                 " **************************** BUY: {} **************************** ".format(close))
+            print(" **************************** BUY: {} **************************** ".format(close))
             debug_logger.debug(json.dumps(order))
         except Exception as error:
             debug_logger.debug(error)
