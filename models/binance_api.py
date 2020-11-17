@@ -1,13 +1,15 @@
 import json
 import os
+import pandas as pd
 import numpy
 import talib
+from binance.helpers import *
 from binance.client import Client
 from models.config import Config
 from binance.websockets import BinanceSocketManager
 import logging.handlers
-
 from models.mail import Mail
+import matplotlib.pyplot as plt
 
 debug_logger = logging.getLogger('debug.log')
 debug_logger.setLevel(logging.DEBUG)
@@ -26,13 +28,16 @@ class BinanceAPI:
 
     # noinspection PyTypeChecker
     def __init__(self):
+        self.bought = []
+        self.sold = []
+        self.dates = []
         self.closes = []
         self.rsi_overbought = 70
-        self.rsi_oversold = 30
-        self.rsi_period = 21
-        self.macd_fast_period = 12
-        self.macd_slow_period = 26
-        self.macd_signal_period = 9
+        self.rsi_oversold = 35
+        self.rsi_period = 18
+        self.rsi_short_overbought = 85
+        self.rsi_short_oversold = 25
+        self.rsi_short_period = 5
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
         self.socket_manager = BinanceSocketManager(self.client)
@@ -66,14 +71,14 @@ class BinanceAPI:
         :param close:
         :return:
         """
-        self.write_file(os.path.join("/cache/last_bought.txt"), str(float(close)))
+        self.write_file(os.path.join("last_bought.txt"), str(float(close)))
 
     def get_last_order_id(self):
         """
 
         :return:
         """
-        return self.read_file(os.path.join("/cache/last_order_id.txt"))
+        return self.read_file(os.path.join("last_order_id.txt"))
 
     def set_last_order_id(self, order_id):
         """
@@ -81,14 +86,16 @@ class BinanceAPI:
         :param order_id:
         :return:
         """
-        self.write_file(os.path.join("/cache/last_order_id.txt"), str(order_id))
+        self.write_file(os.path.join("last_order_id.txt"), str(order_id))
 
     def get_last_bought(self):
         """
 
         :return:
         """
-        return float(self.read_file(os.path.join("/cache/last_bought.txt")))
+        if (self.read_file(os.path.join("last_bought.txt"))) != "":
+            return float(self.read_file(os.path.join("last_bought.txt")))
+        return 0.0
 
     def set_in_position(self, position):
         """
@@ -96,20 +103,30 @@ class BinanceAPI:
         :param position:
         :return:
         """
-        self.write_file(os.path.join("/cache/position.txt"), str(int(position)))
+        self.write_file(os.path.join("position.txt"), str(int(position)))
 
     def get_in_position(self):
         """
 
         :return:
         """
-        return self.read_file(os.path.join("/cache/position.txt"))
+        if self.read_file(os.path.join("position.txt")) != "":
+            return bool(int(self.read_file(os.path.join("position.txt"))))
+        return 0
 
     def start_socket(self):
         """
 
         :return:
         """
+        dataframe = self.get_candles()
+        for close in dataframe['close']:
+            self.bought.append(numpy.nan)
+            self.sold.append(numpy.nan)
+            self.closes.append(close)
+        for date in dataframe['datetime']:
+            time = datetime.fromtimestamp(date.timestamp())
+            self.dates.append(time.strftime("%d.%m.%Y, %H:%M:%S"))
         self.socket_manager.start()
         debug_logger.debug("socket started")
 
@@ -132,16 +149,28 @@ class BinanceAPI:
                 self.set_in_position(False)
                 self.set_last_bought(0.0)
                 self.send_sell_filled_mail(order["price"], order["origQty"])
+                debug_logger.debug(
+                    "************************************ Verkauforder ausgeführt: {0} Menge: {1} ************************************".format(
+                        order["price"], order["origQty"]))
             if order["side"] == "BUY":
                 self.set_last_bought(order["price"])
                 self.set_in_position(True)
                 self.send_buy_filled_mail(order["price"], order["origQty"])
+                debug_logger.debug(
+                    "************************************ Kauforder ausgeführt: {0} Menge: {1} ************************************".format(
+                        order["price"], order["origQty"]))
         if order["status"] == "CANCELLED":
             self.set_last_order_id("")
             if order["side"] == "SELL":
                 self.send_sell_cancelled_mail(order["price"], order["origQty"])
+                debug_logger.debug(
+                    "************************************ Verkauforder abgebrochen: {0} Menge: {1} ************************************".format(
+                        order["price"], order["origQty"]))
             if order["side"] == "BUY":
                 self.send_buy_cancelled_mail(order["price"], order["origQty"])
+                debug_logger.debug(
+                    "************************************ Kauforder abgebrochen: {0} Menge: {1} ************************************".format(
+                        order["price"], order["origQty"]))
 
     def process_message(self, msg):
         """
@@ -149,6 +178,8 @@ class BinanceAPI:
         :param msg:
         :return:
         """
+        # buy = False
+        # sold = False
         if msg['e'] == 'error':
             debug_logger.debug("".format(msg['e']))
             self.restart_socket()
@@ -159,46 +190,63 @@ class BinanceAPI:
             close = float(candle["c"])
 
             if is_candle_closed:
-
-                if len(self.closes) >= 500:
-                    debug_logger.debug("old close values: {0}".format(json.dumps(self.closes)))
-                    debug_logger.debug("removing close value: {0}".format(self.closes[0]))
-                    self.closes.remove(0)
-                    debug_logger.debug("new close values: {0}".format(json.dumps(self.closes)))
-
                 debug_logger.debug("appending close value: {0}".format(close))
+                timestamp = int(candle["T"] / 1000)
+                date = datetime.fromtimestamp(timestamp)
+                self.dates.append(date.strftime("%m/%d/%Y, %H:%M:%S"))
                 self.closes.append(close)
+                debug_logger.debug("closes size: {0}".format(str(len(self.closes))))
+                np_closes = numpy.array(self.closes)
+                closes_min = numpy.amin(np_closes)
+                closes_max = numpy.amax(np_closes)
+                average = numpy.average(np_closes)
+                upper_border = (closes_max - average / 2) + average
+                bottom_border = (average - closes_min / 2) + closes_min
+                print("Min {}".format(closes_min))
+                print("Max {}".format(closes_max))
+                print("Average {}".format(average))
+                rsi = talib.RSI(np_closes, self.rsi_period)
+                short_rsi = talib.RSI(np_closes, self.rsi_short_period)
 
-                if len(self.closes) > 100:
-                    np_closes = numpy.array(self.closes)
-                    rsi = talib.RSI(np_closes, self.rsi_period)
-                    macd, macdsignal, macdhist = talib.MACD(np_closes, fastperiod=self.macd_fast_period,
-                                                            slowperiod=self.macd_slow_period,
-                                                            signalperiod=self.macd_signal_period)
-                    print(close)
-                    macd_value = numpy.where((macd > macdsignal), 1, 0)
-                    print(macd_value)
-                    last_rsi = rsi[-1]
-                    debug_logger.debug("RSI {}".format(last_rsi))
+                last_rsi = rsi[-1]
+                last_rsi_short = short_rsi[-1]
+                debug_logger.debug("RSI {}".format(last_rsi))
+                debug_logger.debug("Short RSI {}".format(last_rsi_short))
 
-                    if self.get_last_order_id() != "":
-                        self.check_last_order_status()
+                if self.get_last_order_id() != "":
+                    self.check_last_order_status()
 
-                    if last_rsi > self.rsi_overbought and self.get_last_bought() < close and self.get_last_order_id() == "":
-                        if self.get_in_position():
-                            debug_logger.debug(
-                                " **************************** SELL: {} **************************** ".format(close))
-                            self.sell(close)
-                        else:
-                            debug_logger.debug("it is overbought but we dont own anything so nothing to do")
+                if last_rsi > self.rsi_overbought and self.get_last_bought() < close and self.get_last_order_id() == "" and last_rsi_short > self.rsi_short_overbought:
+                    if self.get_in_position():
+                        self.sell(close)
+                        # self.sold.append(close)
+                        # sold = True
+                    else:
+                        debug_logger.debug("it is overbought but we dont own anything so nothing to do")
+                        # self.sold.append(numpy.nan)
 
-                    if last_rsi < self.rsi_oversold and self.get_last_order_id() == "":
-                        if self.get_in_position():
-                            debug_logger.debug("it is oversold, but you already own it, nothing to do")
-                        else:
-                            debug_logger.debug(
-                                " **************************** BUY: {} **************************** ".format(close))
-                            self.buy(close)
+                if last_rsi < self.rsi_oversold and self.get_last_order_id() == "" and last_rsi_short < self.rsi_short_oversold:
+                    if self.get_in_position():
+                        debug_logger.debug("it is oversold, but you already own it, nothing to do")
+                        # self.sold.append(numpy.nan)
+                    else:
+                        buy = True
+                        self.buy(close)
+                        # self.bought.append(close)
+
+                # if not sold:
+                #     self.sold.append(numpy.nan)
+                # if not buy:
+                #     self.bought.append(numpy.nan)
+                # plt.figure(1)
+                # plt.subplot(211)
+                # plt.plot(self.dates, self.closes, color='blue')
+                # # plt.plot(self.dates, self.sold, color='red', marker='o')
+                # # plt.plot(self.dates, self.bought, color='green', marker='o')
+                # plt.subplot(212)
+                # plt.plot(self.dates, rsi, color='red')
+                # plt.plot(self.dates, short_rsi, color="orange")
+                # plt.show()
 
     def get_order_type(self):
         order_type = self.config.get("OrderType")
@@ -208,23 +256,88 @@ class BinanceAPI:
             order_type = self.client.ORDER_TYPE_LIMIT
         return order_type
 
+    def backtest(self):
+        dataframe = self.get_candles()
+        np_closes = numpy.array(dataframe["close"])
+        closes_min = numpy.amin(np_closes)
+        closes_max = numpy.amax(np_closes)
+        average = numpy.average(np_closes)
+        upper_border = ((closes_max - average) / 2) + average
+        bottom_border = ((average - closes_min) / 2) + closes_min
+        print("Min {}".format(closes_min))
+        print("Max {}".format(closes_max))
+        print("Average {}".format(average))
+        print("Bottom {}".format(bottom_border))
+        print("Top {}".format(upper_border))
+        rsi = talib.RSI(np_closes, self.rsi_period)
+        short_rsi = talib.RSI(np_closes, self.rsi_short_period)
+        last_bought = self.get_last_bought()
+        in_position = self.get_in_position()
+        bought = list()
+        sold = list()
+
+        for i in range(0, len(np_closes)):
+            buy = False
+            sell = False
+            last_rsi = rsi[i]
+            last_rsi_short = short_rsi[i]
+            close = np_closes[i]
+
+            if last_rsi > self.rsi_overbought and last_bought < close and last_rsi_short > self.rsi_short_overbought and close > bottom_border:
+                if in_position:
+                    sold.append(close)
+                    in_position = False
+                    last_bought = 0.0
+                    sell = True
+
+            if last_rsi < self.rsi_oversold and last_rsi_short < self.rsi_short_oversold and close < upper_border:
+                if not in_position:
+                    bought.append(close)
+                    in_position = True
+                    last_bought = close
+                    buy = True
+            if not sell:
+                sold.append(numpy.nan)
+            if not buy:
+                bought.append(numpy.nan)
+
+        dates = dataframe['datetime']
+        plt.figure(1)
+        plt.subplot(211)
+        plt.plot(dates, np_closes, color='blue')
+        plt.plot(dates, sold, color='red', marker='o')
+        plt.plot(dates, bought, color='green', marker='o')
+        plt.subplot(212)
+        plt.plot(dates, rsi, color='red')
+
+        plt.plot(dates, short_rsi, color="orange")
+        plt.show()
+
     def sell(self, close):
         """
 
         :param close:
         :return:
         """
-        price, quantity = self.get_sell_value(close)
-        order = self.client.create_order(
-            symbol=self.config.get("Symbol"),
-            side=self.client.SIDE_SELL,
-            type=self.get_order_type(),
-            timeInForce=self.client.TIME_IN_FORCE_GTC,
-            quantity=quantity,
-            price=price)
-        self.set_last_order_id(order["orderId"])
-        self.send_sell_mail(close)
-        debug_logger.debug(json.dumps(order))
+        try:
+            price, quantity = self.get_sell_value(close)
+            order = self.client.create_order(
+                symbol=self.config.get("Symbol"),
+                side=self.client.SIDE_SELL,
+                type=self.get_order_type(),
+                timeInForce=self.client.TIME_IN_FORCE_GTC,
+                quantity=quantity,
+                price=price)
+            self.set_last_order_id(order["orderId"])
+            self.send_sell_mail(close)
+            debug_logger.debug(
+                " **************************** SELL: {} **************************** ".format(close))
+            debug_logger.debug(json.dumps(order))
+        except Exception as error:
+            debug_logger.debug(error)
+            mail = Mail()
+            mail.send_mail("Fehler", error)
+            return False
 
     def get_sell_value(self, close):
         """
@@ -243,17 +356,25 @@ class BinanceAPI:
         :param close:
         :return:
         """
-        price, quantity = self.get_buy_value(close)
-        order = self.client.create_order(
-            symbol=self.config.get("Symbol"),
-            side=self.client.SIDE_BUY,
-            type=self.get_order_type(),
-            timeInForce=self.client.TIME_IN_FORCE_GTC,
-            quantity=quantity,
-            price=price)
-        self.set_last_order_id(order["orderId"])
-        self.send_buy_mail(close)
-        debug_logger.debug(json.dumps(order))
+        try:
+            price, quantity = self.get_buy_value(close)
+            order = self.client.create_order(
+                symbol=self.config.get("Symbol"),
+                side=self.client.SIDE_BUY,
+                type=self.get_order_type(),
+                timeInForce=self.client.TIME_IN_FORCE_GTC,
+                quantity=quantity,
+                price=price)
+            self.set_last_order_id(order["orderId"])
+            self.send_buy_mail(close)
+            debug_logger.debug(
+                " **************************** BUY: {} **************************** ".format(close))
+            debug_logger.debug(json.dumps(order))
+        except Exception as error:
+            debug_logger.debug(error)
+            mail = Mail()
+            mail.send_mail("Fehler", error)
+            return False
 
     def get_buy_value(self, close):
         """
@@ -380,3 +501,36 @@ class BinanceAPI:
         message += "Menge: {0}</br>".format(quantity)
         mail = Mail()
         mail.send_mail(subject, message)
+
+    def get_candles(self):
+        record = self.client.get_historical_klines(self.config.get("Symbol"), self.get_interval(), "1 day ago UTC")
+        myList = []
+
+        try:
+            for item in record:
+                n_item = []
+                int_ts = int(item[0] / 1000)
+                # nur neue timestamps anhängen
+
+                n_item.append(int_ts)  # open time
+                n_item.append(float(item[1]))  # open
+                n_item.append(float(item[2]))  # high
+                n_item.append(float(item[3]))  # low
+                n_item.append(float(item[4]))  # close
+                n_item.append(float(item[5]))  # volume
+                n_item.append(int(item[6] / 1000))  # close_time
+                n_item.append(float(item[7]))  # quote_assetv
+                n_item.append(int(item[8]))  # trades
+                n_item.append(float(item[9]))  # taker_b_asset_v
+                n_item.append(float(item[10]))  # taker_b_quote_v
+                n_item.append(datetime.fromtimestamp(n_item[0]))
+                myList.append(n_item)
+        except Exception as error:
+            debug_logger.debug(error)
+
+        new_ohlc = pd.DataFrame(myList, columns=['open_time', 'open', 'high', 'low',
+                                                 'close', 'volume', 'close_time', 'quote_assetv', 'trades',
+                                                 'taker_b_asset_v',
+                                                 'taker_b_quote_v', 'datetime'])
+
+        return new_ohlc

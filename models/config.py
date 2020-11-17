@@ -6,7 +6,7 @@ class Config:
 
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.config.read(os.path.join("/config/settings.ini"))
+        self.config.read(os.path.abspath(os.path.curdir + "/config/settings.ini"))
         self.config.sections()
 
     def get(self, key):
