@@ -30,8 +30,8 @@ class BinanceAPI:
     def __init__(self):
         self.closes = []
         self.rsi_overbought = 70
-        self.rsi_oversold = 30
-        self.rsi_period = 18
+        self.rsi_oversold = 15
+        self.rsi_period = 21
         self.config = Config()
         self.client = Client(self.config.get("Binance_api_key"), self.config.get("Binance_api_secret"))
         self.socket_manager = BinanceSocketManager(self.client)
@@ -177,42 +177,73 @@ class BinanceAPI:
             close = float(candle["c"])
 
             if is_candle_closed:
+                should_sell = 0
+                should_buy = 0
                 debug_logger.debug(
                     "--------------------------------------------------------------------------------------------------------------------------------------")
-                debug_logger.debug("appending close value: {0}".format(close))
                 self.closes.append(close)
-                debug_logger.debug("closes size: {0}".format(str(len(self.closes))))
+
+                while len(self.closes) > 800:
+                    self.closes.pop(0)
+
                 np_closes = numpy.array(self.closes)
-                rsi = talib.RSI(np_closes, self.rsi_period)
+                # Calculate the MACD and Signal Line indicators
+                # Calculate the Short Term Exponential Moving Average
+                ShortEMA = talib.EMA(np_closes, 9)
+                # Calculate the Long Term Exponential Moving Average
+                LongEMA = talib.EMA(np_closes, 18)
+                # Calculate the Moving Average Convergence/Divergence (MACD)
+                MACD = ShortEMA - LongEMA
+                # Calcualte the signal line
+                signal = talib.EMA(MACD, 5)
                 upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=18, nbdevup=2, nbdevdn=2,
                                                                 matype=0)
                 upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
                 lowerband_crossed = numpy.where((np_closes < lowerband), 1, 0)
+                max_price = numpy.amax(np_closes)
+                lowest_price = numpy.amin(np_closes)
+                average_price = numpy.average(np_closes)
 
-                last_rsi = rsi[-1]
                 last_upperband_crossed = upperband_crossed[-1]
                 last_lowerband_crossed = lowerband_crossed[-1]
-
-                debug_logger.debug("RSI {}".format(last_rsi))
-                debug_logger.debug("last_upperband_crossed {}".format(last_upperband_crossed))
-                debug_logger.debug("last_lowerband_crossed {}".format(last_lowerband_crossed))
-
-                # print(
-                # "--------------------------------------------------------------------------------------------------------------------------------------")
-                # print("RSI {}".format(last_rsi))
-                # print("last_upperband_crossed {}".format(last_upperband_crossed))
-                # print("last_lowerband_crossed {}".format(last_lowerband_crossed))
+                last_macd = MACD[-1]
+                last_signal = signal[-1]
 
                 if self.get_last_order_id() != "":
                     self.check_last_order_status()
 
-                if last_rsi > self.rsi_overbought and self.get_last_bought() + 3 < close and self.get_last_order_id() == "" and last_upperband_crossed:
+                if last_macd > last_signal:
+                    should_buy += 1
+
+                if last_lowerband_crossed:
+                    should_buy += 1
+
+                if close > lowest_price and close < average_price:
+                    should_buy += 1
+
+                if close < max_price and close > average_price:
+                    should_sell += 1
+
+                if last_macd < last_signal:
+                    should_sell += 1
+
+                if last_upperband_crossed:
+                    should_sell += 1
+
+                debug_logger.debug("last_upperband_crossed {}".format(last_upperband_crossed))
+                debug_logger.debug("last_lowerband_crossed {}".format(last_lowerband_crossed))
+                debug_logger.debug("last_macd {}".format(last_macd))
+                debug_logger.debug("last_signal {}".format(last_signal))
+                debug_logger.debug("buy {}".format(should_buy))
+                debug_logger.debug("sell {}".format(should_sell))
+
+                if should_sell == 3 and self.get_last_bought() + 10 < close and self.get_last_order_id() == "":
                     if self.get_in_position():
                         self.sell(close)
                     else:
                         debug_logger.debug("it is overbought but we dont own anything so nothing to do")
 
-                if last_rsi < self.rsi_oversold and self.get_last_order_id() == "" and last_upperband_crossed:
+                if should_buy == 3 and self.get_last_order_id() == "":
                     if self.get_in_position():
                         debug_logger.debug("it is oversold, but you already own it, nothing to do")
                     else:
@@ -227,22 +258,36 @@ class BinanceAPI:
         return order_type
 
     def backtest(self):
-        dataframe = self.get_candles()
-        np_closes = numpy.array(dataframe["close"])
-        closes_min = numpy.amin(np_closes)
-        closes_max = numpy.amax(np_closes)
-        average = numpy.average(np_closes)
-        upper_border = ((closes_max - average) / 2) + average
-        bottom_border = ((average - closes_min) / 2) + closes_min
-        print("Min {}".format(closes_min))
-        print("Max {}".format(closes_max))
-        print("Average {}".format(average))
-        print("Bottom {}".format(bottom_border))
-        print("Top {}".format(upper_border))
-        rsi = talib.RSI(np_closes, self.rsi_period)
-        upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=18, nbdevup=2, nbdevdn=2, matype=0)
+        dataframe = self.get_historical_candles()
+        dates = list()
+        for close in dataframe["close"]:
+            self.closes.append(close)
+
+        while len(self.closes) > 8000:
+            self.closes.pop(0)
+
+        for date in dataframe['datetime']:
+            dates.append(date)
+
+        while len(dates) > 8000:
+            dates.pop(0)
+
+        np_closes = numpy.array(self.closes)
+        # Calculate the MACD and Signal Line indicators
+        # Calculate the Short Term Exponential Moving Average
+        ShortEMA = talib.EMA(np_closes, 9)
+        # Calculate the Long Term Exponential Moving Average
+        LongEMA = talib.EMA(np_closes, 18)
+        # Calculate the Moving Average Convergence/Divergence (MACD)
+        MACD = ShortEMA - LongEMA
+        # Calcualte the signal line
+        signal = talib.EMA(MACD, 5)
+        upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
         upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
         lowerband_crossed = numpy.where((np_closes < lowerband), 1, 0)
+        max_price = numpy.amax(np_closes)
+        lowest_price = numpy.amin(np_closes)
+        average_price = numpy.average(np_closes)
 
         last_bought = self.get_last_bought()
         in_position = self.get_in_position()
@@ -250,25 +295,68 @@ class BinanceAPI:
         bought = list()
         sold = list()
 
-        for i in range(0, len(np_closes)):
+        last_upperband_crossed = False
+        last_lowerband_crossed = False
 
+        for i in range(0, len(np_closes)):
+            should_sell = 0
+            should_buy = 0
             buy = False
             sell = False
-            last_rsi = rsi[i]
-            last_upperband_crossed = upperband_crossed[i]
-            last_lowerband_crossed = lowerband_crossed[i]
+
+            last_macd = MACD[i]
+            last_signal = signal[i]
+
+            if upperband_crossed[i] and not last_upperband_crossed:
+                last_upperband_crossed = True
+                last_lowerband_crossed = False
+
+            if lowerband_crossed[i] and not last_lowerband_crossed:
+                last_upperband_crossed = False
+                last_lowerband_crossed = True
 
             close = np_closes[i]
 
-            if last_rsi > self.rsi_overbought and last_bought + 3 < close and last_upperband_crossed:
+            if last_macd > last_signal:
+                should_buy += 1
+
+            if last_lowerband_crossed:
+                should_buy += 1
+
+            if close > lowest_price and close < average_price:
+                should_buy += 1
+
+            if close < max_price and close > average_price:
+                should_sell += 1
+
+            if last_macd < last_signal:
+                should_sell += 1
+
+            if last_upperband_crossed:
+                should_sell += 1
+
+            print(
+                "--------------------------------------------------------------------------------------------------------------------------------------")
+            print("last_upperband_crossed {}".format(last_upperband_crossed))
+            print("last_lowerband_crossed {}".format(last_lowerband_crossed))
+            print("last_macd {}".format(last_macd))
+            print("last_signal {}".format(last_signal))
+            print("unterer preisbereich {}".format(close > lowest_price and close < average_price))
+            print("oberer preisbereich {}".format(close < max_price and close > average_price))
+            print("buy {}".format(should_buy))
+            print("sell {}".format(should_sell))
+
+            if should_sell == 3 and last_bought + 5 < close:
                 if in_position:
+                    print("****************** sell *********************")
                     sold.append(close)
                     in_position = False
                     last_bought = 0.0
                     sell = True
 
-            if last_rsi < self.rsi_oversold and last_lowerband_crossed:
+            if should_buy == 3:
                 if not in_position:
+                    print("****************** buy *********************")
                     bought.append(close)
                     in_position = True
                     last_bought = close
@@ -279,21 +367,17 @@ class BinanceAPI:
             if not buy:
                 bought.append(numpy.nan)
 
-        dates = dataframe['datetime']
         plt.figure(1)
-        plt.subplot(211)
-
-        # plt.plot(dates, upperband, color='yellow')
-        # plt.plot(dates, middleband, color='black')
-        # plt.plot(dates, lowerband, color='green')
+        plt.subplot(311)
+        plt.plot(dates, upperband, color='yellow')
+        plt.plot(dates, middleband, color='black')
+        plt.plot(dates, lowerband, color='green')
         plt.plot(dates, sold, color='red', marker='o')
         plt.plot(dates, bought, color='green', marker='o')
         plt.plot(dates, np_closes, color='blue')
-        plt.subplot(212)
-        plt.plot(dates, rsi, color='red')
-        # plt.subplot(313)
-        # plt.plot(dates, upperband_crossed, color='red', marker='o')
-        # plt.plot(dates, lowerband_crossed, color='green', marker='o')
+        plt.subplot(313)
+        plt.plot(dates, MACD, label="macd", color='red')
+        plt.plot(dates, signal, label="signal", color='green')
         plt.show()
 
     def sell(self, close):
@@ -488,7 +572,40 @@ class BinanceAPI:
         mail.send_mail(subject, message)
 
     def get_candles(self):
-        record = self.client.get_historical_klines(self.config.get("Symbol"), self.get_interval(), "1 day ago UTC")
+        record = self.client.get_klines(symbol=self.config.get("Symbol"), interval=self.get_interval())
+        myList = []
+
+        try:
+            for item in record:
+                n_item = []
+                int_ts = int(item[0] / 1000)
+                # nur neue timestamps anhängen
+
+                n_item.append(int_ts)  # open time
+                n_item.append(float(item[1]))  # open
+                n_item.append(float(item[2]))  # high
+                n_item.append(float(item[3]))  # low
+                n_item.append(float(item[4]))  # close
+                n_item.append(float(item[5]))  # volume
+                n_item.append(int(item[6] / 1000))  # close_time
+                n_item.append(float(item[7]))  # quote_assetv
+                n_item.append(int(item[8]))  # trades
+                n_item.append(float(item[9]))  # taker_b_asset_v
+                n_item.append(float(item[10]))  # taker_b_quote_v
+                n_item.append(datetime.fromtimestamp(n_item[0]))
+                myList.append(n_item)
+        except Exception as error:
+            debug_logger.debug(error)
+
+        new_ohlc = pd.DataFrame(myList, columns=['open_time', 'open', 'high', 'low',
+                                                 'close', 'volume', 'close_time', 'quote_assetv', 'trades',
+                                                 'taker_b_asset_v',
+                                                 'taker_b_quote_v', 'datetime'])
+
+        return new_ohlc
+
+    def get_historical_candles(self):
+        record = self.client.get_historical_klines(self.config.get("Symbol"), self.get_interval(), "1 week ago UTC")
         myList = []
 
         try:
