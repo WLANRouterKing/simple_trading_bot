@@ -69,6 +69,7 @@ class BinanceAPI:
 
     def get_last_order_id(self):
         """
+        gibt die id der letzten order zurück
 
         :return:
         """
@@ -76,15 +77,16 @@ class BinanceAPI:
 
     def set_last_order_id(self, order_id):
         """
+        setzt die id der letzten order
 
-        :param order_id:
-        :return:
+        :param order_id: string
+        :return: None
         """
         self.write_file(os.path.join("last_order_id.txt"), str(order_id))
 
     def get_last_bought(self):
         """
-
+        gibt den preis der letzten kauforder zurück
         :return:
         """
         if (self.read_file(os.path.join("last_bought.txt"))) != "":
@@ -93,6 +95,7 @@ class BinanceAPI:
 
     def set_in_position(self, position):
         """
+        schreibt die aktuelle position
 
         :param position:
         :return:
@@ -101,6 +104,7 @@ class BinanceAPI:
 
     def get_in_position(self):
         """
+        gibt zurück ob wir in position sind
 
         :return:
         """
@@ -110,28 +114,46 @@ class BinanceAPI:
 
     def start_socket(self):
         """
+        startet den websocket
 
-        :return:
+        :return: None
         """
         dataframe = self.get_candles()
         for close in dataframe['close']:
             self.closes.append(close)
         self.socket_manager.start()
         debug_logger.debug("socket started")
+        mail = Mail()
+        debug_logger.debug(
+            "**************************************** TRADING BOT STARTED ****************************************")
+        mail.send_mail("Tradingbot started", "Tradingbot started")
 
     def restart_socket(self):
         """
+        startet den socket neu
 
-        :return:
+        :return: None
         """
         debug_logger.debug("restarting socket")
         self.socket_manager.stop_socket(self.connection_key)
         self.start_socket()
         debug_logger.debug("socket restarted")
+        mail = Mail()
+        mail.send_mail("Tradingbot socket restarted", "Tradingbot socket restarted")
 
     def check_last_order_status(self):
+        """
+        überprüft den status der letzten order
+
+        :return: None
+        """
+
         order_id = self.get_last_order_id()
         order = self.client.get_order(symbol=self.config.get("Symbol"), orderId=order_id)
+
+        """
+        order wurde durchgeführt
+        """
         if order["status"] == "FILLED":
             self.set_last_order_id("")
             if order["side"] == "SELL":
@@ -148,6 +170,10 @@ class BinanceAPI:
                 debug_logger.debug(
                     "************************************ Kauforder ausgeführt: {0} Menge: {1} ************************************".format(
                         order["price"], order["origQty"]))
+
+        """
+        order wurde abgebrochen
+        """
         if order["status"] == "CANCELLED":
             self.set_last_order_id("")
             if order["side"] == "SELL":
@@ -163,43 +189,60 @@ class BinanceAPI:
 
     def process_message(self, msg):
         """
+        Hier werden die Indikatoren berechnet.
+        - MACD
+        - Bollinger Bänder
+        - Stochastik RSI
 
-        :param msg:
-        :return:
+        :param msg: dict
+        :return: None
         """
         if msg['e'] == 'error':
-            debug_logger.debug("".format(msg['e']))
+            """
+            Beim Fehler den Fehler loggen und den socket neustarten
+            """
+            debug_logger.debug(json.dumps(msg))
             self.restart_socket()
         else:
+            """
+            Response vom Websocket auswerten
+            """
             json_message = msg
             candle = json_message["k"]
             is_candle_closed = candle["x"]
             close = float(candle["c"])
 
+            """
+            nur in die berechnung gehen wenn die kerze geschlossen ist und der liste hinzugefügt werden kann
+            """
             if is_candle_closed:
                 should_sell = 0
                 should_buy = 0
-                debug_logger.debug(
-                    "--------------------------------------------------------------------------------------------------------------------------------------")
+                debug_logger.debug("---------------------------")
                 self.closes.append(close)
 
-                while len(self.closes) > 800:
+                # die liste auf 800 kerzen beschränken
+                while len(self.closes) > 500:
                     self.closes.pop(0)
 
+                # aus der liste einen numpy array zaubern
                 np_closes = numpy.array(self.closes)
-                # Calculate the MACD and Signal Line indicators
-                # Calculate the Short Term Exponential Moving Average
+
+                fastk, fastd = talib.STOCHRSI(np_closes, timeperiod=14, fastk_period=5, fastd_period=3, fastd_matype=0)
+
+                # macd berechnen
                 ShortEMA = talib.EMA(np_closes, 9)
-                # Calculate the Long Term Exponential Moving Average
                 LongEMA = talib.EMA(np_closes, 18)
-                # Calculate the Moving Average Convergence/Divergence (MACD)
                 MACD = ShortEMA - LongEMA
-                # Calcualte the signal line
                 signal = talib.EMA(MACD, 5)
+
+                # bollinger bänder berechnen
                 upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=18, nbdevup=2, nbdevdn=2,
                                                                 matype=0)
                 upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
                 lowerband_crossed = numpy.where((np_closes < lowerband), 1, 0)
+
+                # preis durchschnitt und max/min berechnen in dem getraded werden soll
                 max_price = numpy.amax(np_closes)
                 lowest_price = numpy.amin(np_closes)
                 average_price = numpy.average(np_closes)
@@ -208,6 +251,8 @@ class BinanceAPI:
                 last_lowerband_crossed = lowerband_crossed[-1]
                 last_macd = MACD[-1]
                 last_signal = signal[-1]
+                last_fastk = fastk[-1]
+                last_fastd = fastd[-1]
 
                 if self.get_last_order_id() != "":
                     self.check_last_order_status()
@@ -218,32 +263,36 @@ class BinanceAPI:
                 if last_lowerband_crossed:
                     should_buy += 1
 
-                if close > lowest_price and close < average_price:
-                    should_buy += 1
-
-                if close < max_price and close > average_price:
-                    should_sell += 1
-
                 if last_macd < last_signal:
                     should_sell += 1
 
                 if last_upperband_crossed:
                     should_sell += 1
 
+                if last_fastd > 90 and last_fastk > 90:
+                    should_buy += 1
+
+                if last_fastd <= 20 and last_fastk <= 20:
+                    should_sell += 1
+
                 debug_logger.debug("last_upperband_crossed {}".format(last_upperband_crossed))
                 debug_logger.debug("last_lowerband_crossed {}".format(last_lowerband_crossed))
                 debug_logger.debug("last_macd {}".format(last_macd))
                 debug_logger.debug("last_signal {}".format(last_signal))
+                debug_logger.debug("fastk {}".format(last_fastk))
+                debug_logger.debug("fastd {}".format(last_fastd))
+                debug_logger.debug("unterer preisbereich {}".format(lowest_price < close < average_price))
+                debug_logger.debug("oberer preisbereich {}".format(max_price > close > average_price))
                 debug_logger.debug("buy {}".format(should_buy))
                 debug_logger.debug("sell {}".format(should_sell))
 
-                if should_sell == 3 and self.get_last_bought() + 10 < close and self.get_last_order_id() == "":
+                if should_sell == 3 and max_price > close > average_price and self.get_last_bought() + 5 < close and self.get_last_order_id() == "":
                     if self.get_in_position():
                         self.sell(close)
                     else:
                         debug_logger.debug("it is overbought but we dont own anything so nothing to do")
 
-                if should_buy == 3 and self.get_last_order_id() == "":
+                if should_buy == 3 and lowest_price < close < average_price and self.get_last_order_id() == "":
                     if self.get_in_position():
                         debug_logger.debug("it is oversold, but you already own it, nothing to do")
                     else:
@@ -258,29 +307,30 @@ class BinanceAPI:
         return order_type
 
     def backtest(self):
+        """
+
+        :return: None
+        """
         dataframe = self.get_historical_candles()
         dates = list()
+
         for close in dataframe["close"]:
             self.closes.append(close)
 
-        while len(self.closes) > 8000:
+        while len(self.closes) > 500:
             self.closes.pop(0)
 
         for date in dataframe['datetime']:
             dates.append(date)
 
-        while len(dates) > 8000:
+        while len(dates) > 500:
             dates.pop(0)
 
         np_closes = numpy.array(self.closes)
-        # Calculate the MACD and Signal Line indicators
-        # Calculate the Short Term Exponential Moving Average
         ShortEMA = talib.EMA(np_closes, 9)
-        # Calculate the Long Term Exponential Moving Average
         LongEMA = talib.EMA(np_closes, 18)
-        # Calculate the Moving Average Convergence/Divergence (MACD)
+        fastk, fastd = talib.STOCHRSI(np_closes, timeperiod=14, fastk_period=5, fastd_period=3, fastd_matype=0)
         MACD = ShortEMA - LongEMA
-        # Calcualte the signal line
         signal = talib.EMA(MACD, 5)
         upperband, middleband, lowerband = talib.BBANDS(np_closes, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
         upperband_crossed = numpy.where((np_closes > upperband), 1, 0)
@@ -306,6 +356,8 @@ class BinanceAPI:
 
             last_macd = MACD[i]
             last_signal = signal[i]
+            last_fastk = fastk[i]
+            last_fastd = fastd[i]
 
             if upperband_crossed[i] and not last_upperband_crossed:
                 last_upperband_crossed = True
@@ -323,30 +375,25 @@ class BinanceAPI:
             if last_lowerband_crossed:
                 should_buy += 1
 
-            if close > lowest_price and close < average_price:
-                should_buy += 1
-
-            if close < max_price and close > average_price:
-                should_sell += 1
-
             if last_macd < last_signal:
                 should_sell += 1
 
             if last_upperband_crossed:
                 should_sell += 1
 
-            print(
-                "--------------------------------------------------------------------------------------------------------------------------------------")
+            print("-------------------------------------------------------")
             print("last_upperband_crossed {}".format(last_upperband_crossed))
             print("last_lowerband_crossed {}".format(last_lowerband_crossed))
             print("last_macd {}".format(last_macd))
             print("last_signal {}".format(last_signal))
+            print("fastk {}".format(last_fastk))
+            print("fastd {}".format(last_fastd))
             print("unterer preisbereich {}".format(close > lowest_price and close < average_price))
             print("oberer preisbereich {}".format(close < max_price and close > average_price))
             print("buy {}".format(should_buy))
             print("sell {}".format(should_sell))
 
-            if should_sell == 3 and last_bought + 5 < close:
+            if should_sell == 3 and max_price > close > average_price and last_bought + 10 < close:
                 if in_position:
                     print("****************** sell *********************")
                     sold.append(close)
@@ -354,7 +401,7 @@ class BinanceAPI:
                     last_bought = 0.0
                     sell = True
 
-            if should_buy == 3:
+            if should_buy == 3 and lowest_price < close < average_price:
                 if not in_position:
                     print("****************** buy *********************")
                     bought.append(close)
@@ -376,8 +423,8 @@ class BinanceAPI:
         plt.plot(dates, bought, color='green', marker='o')
         plt.plot(dates, np_closes, color='blue')
         plt.subplot(313)
-        plt.plot(dates, MACD, label="macd", color='red')
-        plt.plot(dates, signal, label="signal", color='green')
+        plt.plot(dates, fastk, label="macd", color='red')
+        plt.plot(dates, fastd, label="signal", color='green')
         plt.show()
 
     def sell(self, close):
@@ -399,7 +446,6 @@ class BinanceAPI:
             self.send_sell_mail(close)
             debug_logger.debug(
                 " **************************** SELL: {} **************************** ".format(close))
-            print(" **************************** SELL: {} **************************** ".format(close))
             debug_logger.debug(json.dumps(order))
         except Exception as error:
             debug_logger.debug(error)
@@ -437,7 +483,6 @@ class BinanceAPI:
             self.send_buy_mail(close)
             debug_logger.debug(
                 " **************************** BUY: {} **************************** ".format(close))
-            print(" **************************** BUY: {} **************************** ".format(close))
             debug_logger.debug(json.dumps(order))
         except Exception as error:
             debug_logger.debug(error)
